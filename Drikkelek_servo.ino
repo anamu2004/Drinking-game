@@ -7,12 +7,16 @@ This code is made to get a servo to point at someone to get them to drink.
 I'am going to make a 3D printed case for the game.
 
 It takes:
-1 Pushbutton
-1 Servo
-1 LCD Display
-1 Potentoimeter
+1x Pushbutton
+1x Servo
+1x LCD Display
+1x Potentoimeter
+1x 10k resistor
 
 
+Pin:
+2 button
+9 servo
 
 */
 
@@ -21,12 +25,17 @@ It takes:
 
 Servo myservo;
 
-const int nbr_of_people = 3;
+int nbr_of_ppl = 3;
 const int button = 2;
+const int rs=12, en=11, d4=6, d5=5, d6=4, d7=3;
+
 bool Drunk = true;
 int prevRandInt;
 
 int pos = 0;
+
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
 
 void setup() {
   pinMode(button, INPUT);
@@ -34,17 +43,27 @@ void setup() {
   myservo.attach(9); //Set servoen til pin 9
 
   Serial.begin(9600);
+  lcd.begin(16, 2);
+
   Serial.println("Start the game");
 
+  lcd.noCursor();
+  lcd.setCursor(1, 0);
+  lcd.print("start the game");
 }
 
 void loop() {
   int buttonPress = digitalRead(button);
 
-  int randInt = random(1,nbr_of_people + 1);
+    lcd.setCursor(1, 0);
+    lcd.print(nbr_of_ppl);
 
-  int servoDegInterval = 180/nbr_of_people;
+    int randInt = random(1,nbr_of_ppl + 1);
+
+    int servoDegInterval = 180/nbr_of_ppl;
+
   if(Drunk == true){
+
     if(buttonPress == HIGH){
 
       prevRandInt = randInt;
@@ -54,13 +73,22 @@ void loop() {
       Serial.print(servoDegInterval * randInt);
       Serial.print(",");
       Serial.println(randInt);
+
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Person number");
+      lcd.setCursor(14, 0);
+      lcd.print(randInt);
+      lcd.setCursor(0, 1);
+      lcd.print("has to drink");
+      
       Drunk = false;
       
       while(buttonPress == HIGH){
         buttonPress = digitalRead(button);
       }
       
-      for (pos = 0; pos <= servoDegInterval * randInt; pos += 1) { // goes from 0 degrees to 180 degrees
+      for (pos = 0; pos <= servoDegInterval * randInt; pos += 1) { // servo rotates to person that has to drink
         myservo.write(pos);               // tell servo to go to position in variable 'pos'
         delay(15);                        // waits 15ms for the servo to reach the position
       }
@@ -80,11 +108,18 @@ void loop() {
       while(buttonPress == HIGH){
         buttonPress = digitalRead(button);
       }
-      for ( pos = servoDegInterval * prevRandInt; pos >= 0; pos -= 1) { // goes from 0 degrees to 180 degrees
+      for ( pos = servoDegInterval * prevRandInt; pos >= 0; pos -= 1) { // servo returns to 0
         myservo.write(pos);               // tell servo to go to position in variable 'pos'
         delay(15);                        // waits 15ms for the servo to reach the position
       }
       Serial.println("Choose another player");
+
+      lcd.clear();
+      lcd.setCursor(1, 0);
+      lcd.print("Press button");
+      lcd.setCursor(0, 1);
+      lcd.print("to drink");
+
       delay(100);
     }
   }

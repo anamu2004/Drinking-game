@@ -25,7 +25,7 @@ Pin:
 
 Servo myservo;
 
-int nbr_of_ppl = 3;
+int nbr_of_ppl = 10;
 const int button = 2;
 const int rs=12, en=11, d4=6, d5=5, d6=4, d7=3;
 
@@ -47,16 +47,19 @@ void setup() {
 
   Serial.println("Start the game");
 
+  lcd.setCursor(0, 0);
+  lcd.print("Start the game:");
+  lcd.setCursor(0, 1);
+  lcd.print("Press the button");
   lcd.noCursor();
-  lcd.setCursor(1, 0);
-  lcd.print("start the game");
 }
 
 void loop() {
   int buttonPress = digitalRead(button);
 
-    lcd.setCursor(1, 0);
-    lcd.print(nbr_of_ppl);
+    //lcd.setCursor(1, 0);
+    //lcd.print(nbr_of_ppl);
+    //lcd.noCursor();
 
     int randInt = random(1,nbr_of_ppl + 1);
 
@@ -81,6 +84,7 @@ void loop() {
       lcd.print(randInt);
       lcd.setCursor(0, 1);
       lcd.print("has to drink");
+      lcd.noCursor();
       
       Drunk = false;
       
@@ -115,10 +119,11 @@ void loop() {
       Serial.println("Choose another player");
 
       lcd.clear();
-      lcd.setCursor(1, 0);
+      lcd.setCursor(0, 0);
       lcd.print("Press button");
       lcd.setCursor(0, 1);
-      lcd.print("to drink");
+      lcd.print("for next drink");
+      lcd.noCursor();
 
       delay(100);
     }

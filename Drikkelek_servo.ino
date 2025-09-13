@@ -6,17 +6,25 @@ Author: Andreas Amundal (anamu2004)
 This code is made to get a servo to point at someone to get them to drink.
 I'am going to make a 3D printed case for the game.
 
-It takes:
+Components:
 1x Pushbutton
 1x Servo
-1x LCD Display
-1x Potentoimeter
-1x 10k resistor
+1x LCD Display (16, 2)
+1x 10k ohm Potentoimeter
+1x 220 ohm resistor
 
 
-Pin:
+Pins:
 2 button
+3 DB7
+4 DB6
+5 DB5
+6 DB4
 9 servo
+11 en / e
+12 RS 
+
+
 
 */
 

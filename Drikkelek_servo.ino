@@ -25,20 +25,23 @@ Pin:
 
 Servo myservo;
 
-int nbr_of_ppl = 10;
 const int button = 2;
+const int ppl_input = A0;
 const int rs=12, en=11, d4=6, d5=5, d6=4, d7=3;
 
 bool Drunk = true;
 int prevRandInt;
-
+int nbr_of_ppl = 2;
 int pos = 0;
+bool nbr_ppl_select = false;
+int max_nbr_ppl = 10;
 
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 
 void setup() {
-  pinMode(button, INPUT);
+  pinMode(button, INPUT_PULLUP);
+  pinMode(ppl_input, INPUT);
 
   myservo.attach(9); //Set servoen til pin 9
 
@@ -52,22 +55,49 @@ void setup() {
   lcd.setCursor(0, 1);
   lcd.print("Press the button");
   lcd.noCursor();
+  
+  myservo.write(0);
 }
 
 void loop() {
   int buttonPress = digitalRead(button);
+  
+  if(nbr_ppl_select == false){
+    Serial.print("hah");
+    lcd.clear();
+    while(buttonPress == HIGH){
 
-    //lcd.setCursor(1, 0);
-    //lcd.print(nbr_of_ppl);
-    //lcd.noCursor();
+      int val = analogRead(ppl_input);
+      
+      nbr_of_ppl = map(val, 0, 1023, 1, max_nbr_ppl);
+      if(nbr_of_ppl == 10){
+        nbr_of_ppl = 9;
+      }
+      
+      lcd.setCursor(1, 0);
+      lcd.print("");
+      lcd.setCursor(0, 0);
+      lcd.print(nbr_of_ppl);
+      lcd.setCursor(2, 0);
+      lcd.print("player(s)");
+      lcd.setCursor(0, 1);
+      lcd.print("selected");
+      lcd.noCursor();
 
-    int randInt = random(1,nbr_of_ppl + 1);
+      buttonPress = digitalRead(button);
+      delay(20);
+    }
+    nbr_ppl_select = true;
+  }
+  
+  
+  int randInt = random(1,nbr_of_ppl + 1);
 
-    int servoDegInterval = 180/nbr_of_ppl;
+  int servoDegInterval = 180/nbr_of_ppl;
 
   if(Drunk == true){
 
-    if(buttonPress == HIGH){
+    if(buttonPress == LOW){
 
       prevRandInt = randInt;
 
@@ -88,9 +118,9 @@ void loop() {
       
       Drunk = false;
       
-      while(buttonPress == HIGH){
-        buttonPress = digitalRead(button);
-      }
+      
+      buttonPress = digitalRead(button);
+      
       
       for (pos = 0; pos <= servoDegInterval * randInt; pos += 1) { // servo rotates to person that has to drink
         myservo.write(pos);               // tell servo to go to position in variable 'pos'
@@ -99,19 +129,19 @@ void loop() {
 
       
       Serial.println("ready to drink");
-      delay(100);
+      delay(10);
     }
     
   }
   else if(Drunk == false){
-    if(buttonPress == HIGH){  
+    if(buttonPress == LOW){  
 
       Serial.println("Returning to start");
       Drunk = true;
 
-      while(buttonPress == HIGH){
-        buttonPress = digitalRead(button);
-      }
+      
+      buttonPress = digitalRead(button);
+      
       for ( pos = servoDegInterval * prevRandInt; pos >= 0; pos -= 1) { // servo returns to 0
         myservo.write(pos);               // tell servo to go to position in variable 'pos'
         delay(15);                        // waits 15ms for the servo to reach the position
@@ -125,7 +155,7 @@ void loop() {
       lcd.print("for next drink");
       lcd.noCursor();
 
-      delay(100);
+      delay(10);
     }
   }
 }

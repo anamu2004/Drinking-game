@@ -4,10 +4,10 @@ Drinking game
 Author: Andreas Amundal (anamu2004)
 
 This code is made to get a servo to point at someone to get them to drink.
-I'am going to make a 3D printed case for the game.
 
 Components:
 1x Pushbutton
+1x Switch (To turn it on and off)
 1x Servo
 1x LCD Display (16, 2)
 1x 10k ohm Potentoimeter

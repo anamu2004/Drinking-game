@@ -13,7 +13,6 @@ Components:
 1x 10k ohm Potentoimeter
 1x 220 ohm resistor
 
-
 Pins:
 2 button
 3 DB7
